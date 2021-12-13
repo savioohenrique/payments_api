@@ -1,0 +1,208 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Payments API",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/auth/{provider}": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get a JWT via given credentials.",
+                "description": "Authenticate user and return a JWT token.",
+                "operationId": "f3b260282c6ba16b13ef7afe6e0f9d62",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Provider (user | storekeeper)",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "mypassword"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User authenticated"
+                    },
+                    "401": {
+                        "description": "Invalid Credentials"
+                    },
+                    "422": {
+                        "description": "Invalid provider"
+                    }
+                }
+            }
+        },
+        "/me/{provider}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get the authenticated User.",
+                "description": "Return the authenticated user.",
+                "operationId": "15a615116203070fb1df61ff3af01c4a",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Provider (users | storekeepers)",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/storekeeper": {
+            "post": {
+                "tags": [
+                    "Storekeeper"
+                ],
+                "summary": "Generate new storekeeper.",
+                "description": "Return a new storekeeper.",
+                "operationId": "316c354993fd023c6754f2b51a4ca2d9",
+                "responses": {
+                    "201": {
+                        "description": "New storekeeper."
+                    }
+                }
+            }
+        },
+        "/transaction": {
+            "post": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Realize transaction between two users.",
+                "description": "Realize transction between users and return transaction data.",
+                "operationId": "a97479bf7e3ded4e38cb69f3d93fa62a",
+                "requestBody": {
+                    "description": "=User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "value": {
+                                        "type": "decimal",
+                                        "format": "text",
+                                        "example": "150.25"
+                                    },
+                                    "provider": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "storekeeper"
+                                    },
+                                    "payee": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "storekeeper@email.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Realized transaction"
+                    },
+                    "403": {
+                        "description": "Refused transaction"
+                    },
+                    "422": {
+                        "description": "Invalid parameters"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Generate new user.",
+                "description": "Return a new user.",
+                "operationId": "d5d7474674b49b1b568f5933ac37d915",
+                "responses": {
+                    "201": {
+                        "description": "New user."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
